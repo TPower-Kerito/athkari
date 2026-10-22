@@ -1,0 +1,15 @@
+# Gradle & Android build files
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+*.apk
+
+# Python caches
+__pycache__/
+*.pyc
+
+# Local server & batch files not needed in repo
+server.py
+run_app.bat
+generate_icons.py

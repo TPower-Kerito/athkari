@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0a281e">
+  <meta name="description" content="تطبيق أذكار الصباح والمساء والسبحة الإلكترونية بدون إنترنت">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="أذكاري">
+  
+  <title>أذكاري | أذكار الصباح والمساء</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icons/favicon.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Preconnect to optional Google Font with local fallback -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="theme-dark">
+  <!-- In-App Auto-Update Banner (appears when new version/commit is pushed) -->
+  <div id="updateNotificationBanner" class="update-notification-banner hidden">
+    <div class="update-banner-content">
+      <div class="update-banner-icon">🔄</div>
+      <div class="update-banner-text">
+        <strong>يتوفر تحديث جديد للتطبيق!</strong>
+        <span id="updateChangelog">انقر هنا لتحديث المحتوى والأذكار فوراً</span>
+      </div>
+    </div>
+    <div class="update-banner-actions">
+      <button id="applyUpdateBtn" class="btn btn-update btn-sm">تحديث الآن</button>
+    </div>
+  </div>
+
+  <!-- PWA Install Banner (appears when installable) -->
+  <div id="pwaInstallBanner" class="pwa-install-banner hidden">
+    <div class="pwa-banner-content">
+      <img src="icons/icon-192.png" alt="أيقونة التطبيق" class="pwa-banner-icon">
+      <div class="pwa-banner-text">
+        <strong>تثبيت تطبيق أذكاري</strong>
+        <span>أضف التطبيق لشاشة هاتفك ليعمل بدون إنترنت كأي تطبيق عادي</span>
+      </div>
+    </div>
+    <div class="pwa-banner-actions">
+      <button id="pwaInstallBtn" class="btn btn-primary btn-sm">تثبيت الآن</button>
+      <button id="pwaDismissBtn" class="btn btn-ghost btn-sm">لاحقاً</button>
+    </div>
+  </div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-top">
+        <div class="brand">
+          <div class="brand-logo">
+            <svg viewBox="0 0 40 40" class="logo-svg">
+              <circle cx="20" cy="20" r="19" fill="#107850" stroke="#f5be3c" stroke-width="1.5"/>
+              <path d="M19 8 A12 12 0 1 0 31 23 A10 10 0 1 1 19 8 Z" fill="#f5be3c"/>
+              <circle cx="27" cy="14" r="2.2" fill="#fff5d0"/>
+            </svg>
+          </div>
+          <div class="brand-info">
+            <h1 class="brand-title">أذكاري</h1>
+            <span id="headerGreeting" class="brand-subtitle">أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <!-- Daily Streak Indicator -->
+          <div class="streak-badge" id="streakBadge" title="أيام متتالية من قراءة الأذكار">
+            <span class="streak-icon">🔥</span>
+            <span id="streakCount">0</span>
+            <span class="streak-label">يوم</span>
+          </div>
+
+          <!-- Settings Dropdown Toggle -->
+          <button id="settingsBtn" class="icon-btn" aria-label="الإعدادات والمظهر" title="المظهر والخط">
+            <svg viewBox="0 0 24 24" class="svg-icon">
+              <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Settings Drawer / Toolbar -->
+      <div id="settingsToolbar" class="settings-toolbar hidden">
+        <div class="setting-item">
+          <span class="setting-title">الوضع الليلي:</span>
+          <button id="themeToggleBtn" class="toggle-pill">
+            <span class="theme-icon-light">☀️ نهار</span>
+            <span class="theme-icon-dark">🌙 ليل</span>
+          </button>
+        </div>
+
+        <div class="setting-item">
+          <span class="setting-title">حجم خط الأذكار:</span>
+          <div class="font-controls">
+            <button id="fontDecBtn" class="pill-btn" title="تصغير الخط">A-</button>
+            <span id="fontScaleDisplay">100%</span>
+            <button id="fontIncBtn" class="pill-btn" title="تكبير الخط">A+</button>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <span class="setting-title">الاهتزاز والصوت:</span>
+          <div class="toggle-group">
+            <button id="hapticToggleBtn" class="pill-btn active" title="الاهتزاز عند الضغط">📳 اهتزاز</button>
+            <button id="soundToggleBtn" class="pill-btn active" title="صوت خفيف عند الضغط">🔔 صوت</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="tabs-nav">
+        <button class="tab-btn active" data-tab="morning">
+          <span class="tab-icon">☀️</span>
+          <span class="tab-text">أذكار الصباح</span>
+        </button>
+        <button class="tab-btn" data-tab="evening">
+          <span class="tab-icon">🌙</span>
+          <span class="tab-text">أذكار المساء</span>
+        </button>
+        <button class="tab-btn" data-tab="tasbeeh">
+          <span class="tab-icon">📿</span>
+          <span class="tab-text">السبحة</span>
+        </button>
+        <button class="tab-btn" data-tab="stats">
+          <span class="tab-icon">📊</span>
+          <span class="tab-text">إحصائياتي</span>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      <!-- Section: Morning / Evening Athkar View -->
+      <section id="athkarSection" class="content-section active">
+        <!-- Progress Bar Card -->
+        <div class="progress-card">
+          <div class="progress-info">
+            <div class="progress-labels">
+              <span id="progressTitle" class="progress-title">أذكار الصباح</span>
+              <span id="progressRatio" class="progress-ratio">0 / 0</span>
+            </div>
+            <div class="progress-percent" id="progressPercent">0%</div>
+          </div>
+          <div class="progress-bar-bg">
+            <div id="progressBarFill" class="progress-bar-fill" style="width: 0%;"></div>
+          </div>
+          <div class="progress-footer">
+            <div id="completionMessage" class="completion-message hidden">
+              ✨ تم بحمد الله إتمام الأذكار كاملة لهذا اليوم! تقبل الله طاعتكم.
+            </div>
+            <button id="resetSectionBtn" class="reset-link-btn" title="إعادة ضبط أذكار هذا القسم للبدء من جديد">
+              ↺ إعادة ضبط
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter / Jump Toolbar -->
+        <div class="filter-toolbar">
+          <div class="filter-chips">
+            <button class="chip active" data-filter="all">الكل</button>
+            <button class="chip" data-filter="remaining">المتبقي فقط</button>
+            <button class="chip" data-filter="completed">المكتمل</button>
+          </div>
+        </div>
+
+        <!-- Cards List -->
+        <div id="athkarList" class="athkar-list">
+          <!-- Dynamically populated by app.js -->
+        </div>
+      </section>
+
+      <!-- Section: Tasbeeh View -->
+      <section id="tasbeehSection" class="content-section">
+        <div class="tasbeeh-container">
+          <!-- Tasbeeh Preset Selector -->
+          <div class="tasbeeh-presets-wrapper">
+            <span class="section-hint">اختر الذكر المطلوب تسبيحه:</span>
+            <div id="tasbeehPresets" class="tasbeeh-presets">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Active Dhikr Display -->
+          <div class="tasbeeh-active-card">
+            <div class="tasbeeh-active-text" id="tasbeehActiveText">سُبْحَانَ اللَّهِ</div>
+            <div class="tasbeeh-target-hint">
+              الهدف لكل دورة: <strong id="tasbeehTarget">33</strong> مرة
+            </div>
+          </div>
+
+          <!-- Interactive Huge Tap Counter Bead Area -->
+          <div class="tasbeeh-touch-wrapper">
+            <button id="tasbeehTapBtn" class="tasbeeh-tap-btn" aria-label="اضغط للتسبيح">
+              <div class="tasbeeh-ring-svg-container">
+                <svg class="tasbeeh-svg-ring" viewBox="0 0 200 200">
+                  <circle class="ring-bg" cx="100" cy="100" r="90"></circle>
+                  <circle id="tasbeehProgressRing" class="ring-fill" cx="100" cy="100" r="90"></circle>
+                </svg>
+              </div>
+              <div class="tasbeeh-counter-content">
+                <span class="tasbeeh-count-number" id="tasbeehCount">0</span>
+                <span class="tasbeeh-tap-hint">المس في أي مكان للتسبيح</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- Tasbeeh Stats & Controls -->
+          <div class="tasbeeh-stats-bar">
+            <div class="stat-box">
+              <span class="stat-num" id="tasbeehRounds">0</span>
+              <span class="stat-text">الدورات المكتملة</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num" id="tasbeehTotal">0</span>
+              <span class="stat-text">إجمالي التسبيح اليوم</span>
+            </div>
+          </div>
+
+          <div class="tasbeeh-actions">
+            <button id="tasbeehResetRoundBtn" class="btn btn-secondary">
+              ↺ تصفير الدورة الحالية
+            </button>
+            <button id="tasbeehResetAllBtn" class="btn btn-ghost">
+              تصفير الإجمالي
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Statistics View -->
+      <section id="statsSection" class="content-section">
+        <div class="stats-container">
+          <!-- Big Highlight Stats -->
+          <div class="streak-hero-card">
+            <div class="streak-hero-icon">🔥</div>
+            <div class="streak-hero-details">
+              <div class="streak-hero-number" id="statsCurrentStreak">0</div>
+              <div class="streak-hero-title">أيام متتالية من الأذكار</div>
+              <div class="streak-hero-best">أطول سلسلة سابقة: <span id="statsBestStreak">0</span> يوم</div>
+            </div>
+          </div>
+
+          <!-- History Summary Grid -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-card-icon">☀️</div>
+              <div class="stat-card-val" id="statsMorningCount">0</div>
+              <div class="stat-card-desc">مرات إتمام أذكار الصباح</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-icon">🌙</div>
+              <div class="stat-card-val" id="statsEveningCount">0</div>
+              <div class="stat-card-desc">مرات إتمام أذكار المساء</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-icon">📿</div>
+              <div class="stat-card-val" id="statsTotalTasbeehCount">0</div>
+              <div class="stat-card-desc">إجمالي التسبيحات والذكر</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-icon">🗓️</div>
+              <div class="stat-card-val" id="statsActiveDays">0</div>
+              <div class="stat-card-desc">إجمالي أيام الاستخدام</div>
+            </div>
+          </div>
+
+          <!-- Last 7 Days Activity Tracker -->
+          <div class="activity-card">
+            <h3 class="activity-title">سجل الأسبوع الحالي</h3>
+            <div class="week-tracker" id="weekTracker">
+              <!-- Dynamically populated with 7 days indicators -->
+            </div>
+          </div>
+
+          <!-- Offline & Personal Use Note -->
+          <div class="info-note-card">
+            <h4>💡 ملاحظة الخصوصية والحفظ</h4>
+            <p>جميع بياناتك وتقدمك اليومي تُحفظ محلياً على هاتفك فقط دون الحاجة لأي اتصال بالإنترنت أو تسجيل دخول.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Floating Quick Counter / Bottom Navigation Bar -->
+    <footer class="app-footer">
+      <div class="footer-quote">
+        «مَثَلُ الَّذِي يَذْكُرُ رَبَّهُ وَالَّذِي لَا يَذْكُرُ رَبَّهُ، مَثَلُ الحَيِّ وَالمَيِّتِ»
+      </div>
+    </footer>
+  </div>
+
+  <!-- Reset Confirmation Modal -->
+  <div id="confirmModal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <h3 class="modal-title">تأكيد إعادة الضبط</h3>
+      <p id="modalMessage" class="modal-text">هل تريد إعادة ضبط عدادات هذا القسم للبدء من جديد؟</p>
+      <div class="modal-actions">
+        <button id="modalConfirmBtn" class="btn btn-danger">نعم، أعد الضبط</button>
+        <button id="modalCancelBtn" class="btn btn-secondary">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="athkar.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // Register Service Worker for offline PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('PWA Service Worker registered:', reg.scope))
+          .catch(err => console.log('Service Worker registration failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>
