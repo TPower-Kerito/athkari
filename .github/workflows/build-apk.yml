@@ -27,11 +27,11 @@ jobs:
         with:
           gradle-version: '8.4'
 
-      - name: Accept Android SDK Licenses & Build APK
+      - name: Build APK with Gradle
         run: |
-          yes | sdkmanager --licenses || true
+          echo "sdk.dir=$ANDROID_HOME" > android/local.properties
           cd android
-          gradle assembleDebug --stacktrace
+          gradle assembleDebug --stacktrace --no-daemon
           cd ..
           cp android/app/build/outputs/apk/debug/app-debug.apk Athkari.apk
 
