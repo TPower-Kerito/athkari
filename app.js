@@ -304,11 +304,7 @@
     // Update Banner
     updateBanner: document.getElementById('updateNotificationBanner'),
     applyUpdateBtn: document.getElementById('applyUpdateBtn'),
-    updateChangelog: document.getElementById('updateChangelog'),
-    // PWA Install
-    pwaBanner: document.getElementById('pwaInstallBanner'),
-    pwaInstallBtn: document.getElementById('pwaInstallBtn'),
-    pwaDismissBtn: document.getElementById('pwaDismissBtn')
+    updateChangelog: document.getElementById('updateChangelog')
   };
 
   // --- Rendering UI ---
@@ -747,30 +743,6 @@
       playTapSound();
     });
 
-    // PWA BeforeInstallPrompt Handler
-    let deferredPrompt = null;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      els.pwaBanner.classList.remove('hidden');
-    });
-
-    els.pwaInstallBtn.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          console.log('User installed the PWA app');
-        }
-        deferredPrompt = null;
-        els.pwaBanner.classList.add('hidden');
-      }
-    });
-
-    els.pwaDismissBtn.addEventListener('click', () => {
-      els.pwaBanner.classList.add('hidden');
-    });
-
     // Check for App Updates (Over-The-Air)
     checkForAppUpdates();
   }
@@ -783,10 +755,18 @@
       if (!res.ok) return;
 
       const remoteData = await res.json();
-      const currentBuild = parseInt(localStorage.getItem('athkari_app_build') || '1', 10);
+      const storedBuild = localStorage.getItem('athkari_app_build');
 
+      // On first launch, record baseline version without showing an update notification
+      if (!storedBuild) {
+        localStorage.setItem('athkari_app_build', remoteData.build);
+        return;
+      }
+
+      const currentBuild = parseInt(storedBuild, 10);
+
+      // Only show update notification if remote build is strictly newer
       if (remoteData.build > currentBuild) {
-        // New update available! Show update banner
         if (els.updateChangelog && remoteData.changelog) {
           els.updateChangelog.textContent = `الإصدار ${remoteData.version}: ${remoteData.changelog}`;
         }
@@ -829,11 +809,6 @@
               window.location.reload(true);
             }, 400);
           });
-        }
-      } else {
-        // Ensure local build is recorded
-        if (!localStorage.getItem('athkari_app_build')) {
-          localStorage.setItem('athkari_app_build', remoteData.build);
         }
       }
     } catch (e) {
