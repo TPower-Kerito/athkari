@@ -45,8 +45,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v1.0.0
-          name: "تطبيق أذكاري للأندرويد - الإصدار 1.0.0"
+          tag_name: v1.0.1
+          name: "تطبيق أذكاري للأندرويد - الإصدار 1.0.1"
           body: |
             ### 🌿 تطبيق أذكاري للأندرويد (APK)
             

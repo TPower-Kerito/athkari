@@ -97,6 +97,8 @@
     settings: {
       theme: 'dark',
       colorTheme: 'emerald',
+      devMode: false,
+      customColors: null,
       fontScale: 1.0,
       hapticsEnabled: true,
       soundEnabled: true
@@ -304,7 +306,22 @@
     // Update Banner
     updateBanner: document.getElementById('updateNotificationBanner'),
     applyUpdateBtn: document.getElementById('applyUpdateBtn'),
-    updateChangelog: document.getElementById('updateChangelog')
+    updateChangelog: document.getElementById('updateChangelog'),
+    // Developer Options
+    devUnlockBtn: document.getElementById('devUnlockBtn'),
+    devOptionsContainer: document.getElementById('devOptionsContainer'),
+    devLockBtn: document.getElementById('devLockBtn'),
+    devAccentColor: document.getElementById('devAccentColor'),
+    devAccentHex: document.getElementById('devAccentHex'),
+    devBgColor: document.getElementById('devBgColor'),
+    devBgHex: document.getElementById('devBgHex'),
+    devCardColor: document.getElementById('devCardColor'),
+    devCardHex: document.getElementById('devCardHex'),
+    devTextColor: document.getElementById('devTextColor'),
+    devTextHex: document.getElementById('devTextHex'),
+    devApplyColorsBtn: document.getElementById('devApplyColorsBtn'),
+    devResetColorsBtn: document.getElementById('devResetColorsBtn'),
+    toastMessage: document.getElementById('toastMessage')
   };
 
   // --- Rendering UI ---
@@ -333,6 +350,43 @@
     document.querySelectorAll('.color-swatch-btn').forEach(btn => {
       btn.classList.toggle('active', btn.getAttribute('data-color') === colorTheme);
     });
+
+    // Developer Mode Visibility
+    if (els.devOptionsContainer) {
+      els.devOptionsContainer.classList.toggle('hidden', !state.settings.devMode);
+    }
+
+    // Apply or Reset Custom Developer Colors
+    if (state.settings.customColors) {
+      const c = state.settings.customColors;
+      document.documentElement.style.setProperty('--accent-emerald', c.accent);
+      document.documentElement.style.setProperty('--accent-emerald-dark', c.accent);
+      document.documentElement.style.setProperty('--accent-emerald-light', c.accent);
+      document.documentElement.style.setProperty('--border-focus', c.accent);
+      document.documentElement.style.setProperty('--bg-app', c.bg);
+      document.documentElement.style.setProperty('--bg-surface', c.card);
+      document.documentElement.style.setProperty('--bg-surface-card', c.card);
+      document.documentElement.style.setProperty('--text-dhikr', c.text);
+
+      if (els.devAccentColor) els.devAccentColor.value = c.accent;
+      if (els.devAccentHex) els.devAccentHex.textContent = c.accent;
+      if (els.devBgColor) els.devBgColor.value = c.bg;
+      if (els.devBgHex) els.devBgHex.textContent = c.bg;
+      if (els.devCardColor) els.devCardColor.value = c.card;
+      if (els.devCardHex) els.devCardHex.textContent = c.card;
+      if (els.devTextColor) els.devTextColor.value = c.text;
+      if (els.devTextHex) els.devTextHex.textContent = c.text;
+    } else {
+      // Remove inline style overrides so normal themes work
+      document.documentElement.style.removeProperty('--accent-emerald');
+      document.documentElement.style.removeProperty('--accent-emerald-dark');
+      document.documentElement.style.removeProperty('--accent-emerald-light');
+      document.documentElement.style.removeProperty('--border-focus');
+      document.documentElement.style.removeProperty('--bg-app');
+      document.documentElement.style.removeProperty('--bg-surface');
+      document.documentElement.style.removeProperty('--bg-surface-card');
+      document.documentElement.style.removeProperty('--text-dhikr');
+    }
 
     // Toggle states
     els.hapticToggleBtn.classList.toggle('active', state.settings.hapticsEnabled);
@@ -742,6 +796,104 @@
       renderTasbeeh();
       playTapSound();
     });
+
+    // Toast Helper
+    let toastTimer = null;
+    function showToast(msg) {
+      if (!els.toastMessage) return;
+      els.toastMessage.textContent = msg;
+      els.toastMessage.classList.remove('hidden');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        els.toastMessage.classList.add('hidden');
+      }, 2500);
+    }
+
+    // Developer 7-Taps Unlock Mechanism
+    let devTapCount = 0;
+    let devTapTimer = null;
+    if (els.devUnlockBtn) {
+      els.devUnlockBtn.addEventListener('click', () => {
+        if (state.settings.devMode) {
+          showToast('خيارات المطور مفعلة بالفعل 🛠️');
+          return;
+        }
+
+        devTapCount++;
+        clearTimeout(devTapTimer);
+        devTapTimer = setTimeout(() => {
+          devTapCount = 0;
+        }, 3000);
+
+        const remaining = 7 - devTapCount;
+        if (remaining > 0 && remaining <= 4) {
+          showToast(`تبقى ${remaining} ضغطات لتصبح مطوراً 🛠️`);
+          triggerHaptic('tap');
+        } else if (remaining <= 0) {
+          state.settings.devMode = true;
+          devTapCount = 0;
+          saveSettings();
+          applySettings();
+          showToast('تم تفعيل خيارات المطور بنجاح! 🛠️🎉');
+          triggerHaptic('cycle');
+          playCompleteSound();
+        } else {
+          triggerHaptic('tap');
+        }
+      });
+    }
+
+    // Developer Lock Button
+    if (els.devLockBtn) {
+      els.devLockBtn.addEventListener('click', () => {
+        state.settings.devMode = false;
+        saveSettings();
+        applySettings();
+        showToast('تم قفل خيارات المطور 🔒');
+        triggerHaptic('tap');
+      });
+    }
+
+    // Developer Color Pickers Live Hex Sync
+    const bindColorPicker = (inputEl, hexEl) => {
+      if (inputEl && hexEl) {
+        inputEl.addEventListener('input', () => {
+          hexEl.textContent = inputEl.value;
+        });
+      }
+    };
+    bindColorPicker(els.devAccentColor, els.devAccentHex);
+    bindColorPicker(els.devBgColor, els.devBgHex);
+    bindColorPicker(els.devCardColor, els.devCardHex);
+    bindColorPicker(els.devTextColor, els.devTextHex);
+
+    // Apply Custom Developer Colors
+    if (els.devApplyColorsBtn) {
+      els.devApplyColorsBtn.addEventListener('click', () => {
+        state.settings.customColors = {
+          accent: els.devAccentColor.value,
+          bg: els.devBgColor.value,
+          card: els.devCardColor.value,
+          text: els.devTextColor.value
+        };
+        saveSettings();
+        applySettings();
+        showToast('تم تطبيق الألوان المخصصة بالكامل! 🎨');
+        triggerHaptic('cycle');
+        playCompleteSound();
+      });
+    }
+
+    // Reset Custom Developer Colors
+    if (els.devResetColorsBtn) {
+      els.devResetColorsBtn.addEventListener('click', () => {
+        state.settings.customColors = null;
+        saveSettings();
+        applySettings();
+        showToast('تمت استعادة الألوان الافتراضية 🌿');
+        triggerHaptic('tap');
+      });
+    }
 
     // Check for App Updates (Over-The-Air)
     checkForAppUpdates();

@@ -109,7 +109,70 @@
             <button id="soundToggleBtn" class="pill-btn active" title="صوت خفيف عند الضغط">🔔 صوت</button>
           </div>
         </div>
+
+        <!-- App Version & Developer Unlock Trigger -->
+        <div class="setting-item version-item">
+          <span class="setting-title">إصدار التطبيق:</span>
+          <button id="devUnlockBtn" class="version-badge" title="اضغط 7 مرات لتفعيل خيارات المطور">
+            v1.0.1 (بناء 3)
+          </button>
+        </div>
+
+        <!-- Developer Options Container (Locked by default, unlocked with 7 taps) -->
+        <div id="devOptionsContainer" class="dev-options-container hidden">
+          <div class="dev-header">
+            <div class="dev-badge">🛠️ خيارات المطور (متقدم)</div>
+            <button id="devLockBtn" class="dev-lock-btn" title="قفل وإخفاء خيارات المطور">قفل 🔒</button>
+          </div>
+          
+          <div class="dev-section">
+            <span class="dev-section-title">🎨 مخصص الألوان المفتوح:</span>
+            <div class="dev-color-grid">
+              <div class="dev-color-field">
+                <label for="devAccentColor">اللون الرئيسي:</label>
+                <div class="color-picker-wrap">
+                  <input type="color" id="devAccentColor" value="#10b981">
+                  <span id="devAccentHex" class="hex-tag">#10b981</span>
+                </div>
+              </div>
+              <div class="dev-color-field">
+                <label for="devBgColor">لون خلفية التطبيق:</label>
+                <div class="color-picker-wrap">
+                  <input type="color" id="devBgColor" value="#081611">
+                  <span id="devBgHex" class="hex-tag">#081611</span>
+                </div>
+              </div>
+              <div class="dev-color-field">
+                <label for="devCardColor">لون بطاقات الأذكار:</label>
+                <div class="color-picker-wrap">
+                  <input type="color" id="devCardColor" value="#132d24">
+                  <span id="devCardHex" class="hex-tag">#132d24</span>
+                </div>
+              </div>
+              <div class="dev-color-field">
+                <label for="devTextColor">لون نصوص الأذكار:</label>
+                <div class="color-picker-wrap">
+                  <input type="color" id="devTextColor" value="#ffffff">
+                  <span id="devTextHex" class="hex-tag">#ffffff</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="dev-color-actions">
+              <button id="devApplyColorsBtn" class="btn btn-primary btn-sm">تطبيق الألوان المخصصة</button>
+              <button id="devResetColorsBtn" class="btn btn-ghost btn-sm">استعادة الافتراضي</button>
+            </div>
+          </div>
+
+          <!-- Empty space reserved for future dev additions -->
+          <div class="dev-empty-placeholder">
+            <span>⚙️ مساحة مخصصة لأدوات المطور القادمة...</span>
+          </div>
+        </div>
       </div>
+
+      <!-- Toast Notification Element -->
+      <div id="toastMessage" class="toast-message hidden"></div>
 
       <!-- Navigation Tabs -->
       <nav class="tabs-nav">
