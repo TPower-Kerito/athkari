@@ -96,6 +96,7 @@
     todayDate: getTodayString(),
     settings: {
       theme: 'dark',
+      colorTheme: 'emerald',
       fontScale: 1.0,
       hapticsEnabled: true,
       soundEnabled: true
@@ -326,6 +327,16 @@
     // Font Scale
     document.documentElement.style.setProperty('--font-scale', state.settings.fontScale);
     els.fontScaleDisplay.textContent = Math.round(state.settings.fontScale * 100) + '%';
+
+    // Color Theme Palette
+    const colorTheme = state.settings.colorTheme || 'emerald';
+    els.body.classList.remove('color-emerald', 'color-blue', 'color-purple', 'color-amber', 'color-rose');
+    els.body.classList.add(`color-${colorTheme}`);
+
+    // Update active color swatch in UI
+    document.querySelectorAll('.color-swatch-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-color') === colorTheme);
+    });
 
     // Toggle states
     els.hapticToggleBtn.classList.toggle('active', state.settings.hapticsEnabled);
@@ -642,6 +653,17 @@
     // Settings Toggle
     els.settingsBtn.addEventListener('click', () => {
       els.settingsToolbar.classList.toggle('hidden');
+    });
+
+    // Color Swatch Selection
+    document.querySelectorAll('.color-swatch-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const selectedColor = btn.getAttribute('data-color');
+        state.settings.colorTheme = selectedColor;
+        saveSettings();
+        applySettings();
+        triggerHaptic('tap');
+      });
     });
 
     // Theme Toggle

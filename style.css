@@ -73,6 +73,97 @@ body.theme-light {
   --ring-color: rgba(5, 150, 105, 0.15);
 }
 
+/* Color Theme Palettes */
+body.color-blue {
+  --accent-emerald: #0ea5e9;
+  --accent-emerald-dark: #0284c7;
+  --accent-emerald-light: #38bdf8;
+  --border-focus: #0ea5e9;
+  --border-completed: rgba(14, 165, 233, 0.35);
+  --ring-color: rgba(14, 165, 233, 0.2);
+}
+body.color-blue:not(.theme-light) {
+  --bg-app: #08121c;
+  --bg-surface: #0e1e2d;
+  --bg-surface-elevated: #142a3f;
+  --bg-surface-card: #112436;
+  --bg-card-completed: #0a1723;
+}
+
+body.color-purple {
+  --accent-emerald: #a855f7;
+  --accent-emerald-dark: #9333ea;
+  --accent-emerald-light: #c084fc;
+  --border-focus: #a855f7;
+  --border-completed: rgba(168, 85, 247, 0.35);
+  --ring-color: rgba(168, 85, 247, 0.2);
+}
+body.color-purple:not(.theme-light) {
+  --bg-app: #120c1e;
+  --bg-surface: #1d1430;
+  --bg-surface-elevated: #281b43;
+  --bg-surface-card: #221739;
+  --bg-card-completed: #160e25;
+}
+
+body.color-amber {
+  --accent-emerald: #f59e0b;
+  --accent-emerald-dark: #d97706;
+  --accent-emerald-light: #fbbf24;
+  --border-focus: #f59e0b;
+  --border-completed: rgba(245, 158, 11, 0.35);
+  --ring-color: rgba(245, 158, 11, 0.2);
+}
+body.color-amber:not(.theme-light) {
+  --bg-app: #1a1208;
+  --bg-surface: #271b0c;
+  --bg-surface-elevated: #362612;
+  --bg-surface-card: #2e200f;
+  --bg-card-completed: #1e150a;
+}
+
+body.color-rose {
+  --accent-emerald: #f43f5e;
+  --accent-emerald-dark: #e11d48;
+  --accent-emerald-light: #fb7185;
+  --border-focus: #f43f5e;
+  --border-completed: rgba(244, 63, 94, 0.35);
+  --ring-color: rgba(244, 63, 94, 0.2);
+}
+body.color-rose:not(.theme-light) {
+  --bg-app: #1a080d;
+  --bg-surface: #290e15;
+  --bg-surface-elevated: #3b141f;
+  --bg-surface-card: #32111a;
+  --bg-card-completed: #1f0a10;
+}
+
+.color-palette-options {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-swatch-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: var(--swatch-color);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.color-swatch-btn:hover {
+  transform: scale(1.15);
+}
+
+.color-swatch-btn.active {
+  border-color: #ffffff;
+  box-shadow: 0 0 10px var(--swatch-color);
+  transform: scale(1.22);
+}
+
 /* Base Reset */
 *, *::before, *::after {
   box-sizing: border-box;
